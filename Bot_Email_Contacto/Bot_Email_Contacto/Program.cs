@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading;
 using AE.Net.Mail;
 
 namespace Bot_Email_Contacto
@@ -12,43 +13,59 @@ namespace Bot_Email_Contacto
         static void Main(string[] args)
         {
 
-            AuthMethods method = AuthMethods.Login;
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-            DateTime Dia_Anterior = DateTime.Now.AddDays(-1);
+            do { 
 
-            using (var imap = new ImapClient("outlook.office365.com", "botsgna@outlook.com", "w2003ejf103", method, 993, true))
-            {
+                AuthMethods method = AuthMethods.Login;
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                DateTime Dia_Actual = DateTime.Now;
 
-                Lazy<MailMessage>[] msgs = imap.SearchMessages(SearchCondition.To("contacto@gna.cl"));
-    
+                Console.WriteLine(" Busqueda de Correos - " + Dia_Actual.ToString("yyyy-MM-dd hh:mm:ss"));
+                
 
-
-                int Cantidad = msgs.Length;
-
-                for (int i = 1; i < Cantidad; i++)
+                using (var imap = new ImapClient("outlook.office365.com", "botsgna@outlook.com", "w2003ejf103", method, 993, true))
                 {
-                    Console.WriteLine(msgs[i].Value.From.ToString());
+                    SearchCondition condition = new SearchCondition();
+                    condition.Value = SearchCondition.To("contacto@gna.cl");
 
-                    //if (msgs[i].Value.Date > Dia_Anterior)
-                    //{
-                        if (!msgs[i].Value.From.ToString().Contains("gna.cl") && !msgs[i].Value.From.ToString().Contains("garcianadal.cl") && !msgs[i].Value.From.ToString().Contains("noreply"))
+                    Lazy<MailMessage>[] msgs = imap.SearchMessages(condition);
+                    //Lazy<MailMessage>[] msgs = imap.SearchMessages(SearchCondition.To("contacto@gna.cl").And(condition));
+
+                    int Cantidad = msgs.Length;
+
+
+                    for (int i = 1; i < Cantidad; i++)
+                    {
+
+                        if (msgs[i].Value.Date.ToShortDateString() == Dia_Actual.ToShortDateString())
                         {
 
 
-                            string Remitente = msgs[i].Value.From.ToString();
-                            DateTime Fecha_Carga = msgs[i].Value.Date;
-                            string Email_Asunto = msgs[i].Value.Subject;
-                            string Email_Mensaje = msgs[i].Value.Body.ToString();
+                            if (!msgs[i].Value.From.ToString().Contains("gna.cl") && !msgs[i].Value.From.ToString().Contains("garcianadal.cl") && !msgs[i].Value.From.ToString().Contains("noreply"))
+                            {
 
-                            Grabar_Email(Fecha_Carga, Remitente, Email_Asunto, Email_Mensaje);
+                                Console.WriteLine((msgs[i].Value.From.ToString() + " - " + msgs[i].Value.Date.ToString("yyyy-MM-dd hh:mm:ss")));
 
+                                string Remitente = msgs[i].Value.From.ToString();
+                                DateTime Fecha_Carga = msgs[i].Value.Date;
+                                string Email_Asunto = msgs[i].Value.Subject;
+                                string Email_Mensaje = msgs[i].Value.Body.ToString();
+
+                                Grabar_Email(Fecha_Carga, Remitente, Email_Asunto, Email_Mensaje);
+
+
+                            }
 
                         }
 
-                    //}
-
+                    }
                 }
-            }
+
+
+
+                Thread.Sleep(300000);
+
+            } while (true);
+
         }
 
 
