@@ -18,6 +18,7 @@ namespace Bot_Email_Contacto
                 try
                 {
 
+                    Console.Clear();
                     AuthMethods method = AuthMethods.Login;
                     System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                     DateTime Dia_Actual = DateTime.Now;
@@ -58,7 +59,7 @@ namespace Bot_Email_Contacto
                         }
                     }
 
-                    Console.WriteLine("Finalizo  la busqueda, Reintentara en 1 hora mas - ("+ Dia_Actual.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss") + ")");
+                    Console.WriteLine("Finalizo  la busqueda, Reintentara en 1 hora mas - ("+ Dia_Actual.AddHours(1).ToString("yyyy-MM-dd hh:mm:ss") + ")");
                     Thread.Sleep(3600000);
                 }
                 catch (Exception ex)
