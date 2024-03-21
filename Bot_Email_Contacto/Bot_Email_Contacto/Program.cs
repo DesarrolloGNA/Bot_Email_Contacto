@@ -58,9 +58,9 @@ namespace Bot_Email_Contacto
 
                         }
                     }
-
-                    Console.WriteLine("Finalizo  la busqueda, Reintentara en 1 hora mas - ("+ Dia_Actual.AddHours(1).ToString("yyyy-MM-dd hh:mm:ss") + ")");
-                    Thread.Sleep(3600000);
+                    Dia_Actual = DateTime.Now;
+                    Console.WriteLine("Finalizo  la busqueda, Reintentara en 15 minutos mas mas - ("+ Dia_Actual.AddMinutes(15).ToString("yyyy-MM-dd hh:mm:ss") + ")");
+                    Thread.Sleep(900000);
                 }
                 catch (Exception ex)
                 {
