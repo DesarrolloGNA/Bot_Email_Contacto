@@ -37,12 +37,19 @@ namespace Bot_Email_Contacto
                         for (int i = 1; i < Cantidad; i++)
                         {
 
+
+                            Console.WriteLine((i.ToString() + " de " + Cantidad.ToString() + "---" + msgs[i].Value.From.ToString()));
+
                             if (msgs[i].Value.Date.ToShortDateString() == Dia_Actual.ToShortDateString())
                             {
 
                                 if ((!msgs[i].Value.From.ToString().Contains("gna.cl") && !msgs[i].Value.From.ToString().Contains("garcianadal.cl") && !msgs[i].Value.From.ToString().Contains("noreply")) || ((!msgs[i].Value.From.ToString().Contains("gna.cl") || !msgs[i].Value.From.ToString().Contains("garcianadal.cl")) && msgs[i].Value.Subject.ToUpper().Contains("CELULAR ESTEBAN")))
                                 {
 
+                                    try
+                                    {
+
+                               
                                     Console.WriteLine((msgs[i].Value.From.ToString() + " - " + msgs[i].Value.Date.ToString("yyyy-MM-dd hh:mm:ss")));
 
                                     string Remitente = msgs[i].Value.From.ToString();
@@ -51,6 +58,13 @@ namespace Bot_Email_Contacto
                                     string Email_Mensaje = msgs[i].Value.Body.ToString();
 
                                     Grabar_Email(Fecha_Carga, Remitente, Email_Asunto, Email_Mensaje);
+
+                                    }
+                                    catch (Exception EX)
+                                    {
+                                        Console.WriteLine(EX.Message.ToString());
+                                    }
+
 
                                 }
 
